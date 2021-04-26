@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="addMovieViewModel"
+            type="com.example.roomdatamvvm.activities.movie.AddMovieViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.movie.AddMovieActivity">
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner"
+            app:layout_constraintTop_toTopOf="parent"
+            android:spinnerMode="dialog"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"/>
+        <EditText
+            android:layout_marginTop="20dp"
+            android:hint="Enter Movie Name"
+            android:text="@={addMovieViewModel.nameMovie}"
+            app:layout_constraintTop_toBottomOf="@id/spinner"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/add_movie_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{addMovieViewModel.addMovieButton}"
+            android:onClick="@{()->addMovieViewModel.clickAddMovie()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/show_activity_main_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()-> addMovieViewModel.openMainActivity()}"
+            android:text="@{addMovieViewModel.showActivityButton}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_movie_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="addViewModel"
+            type="com.example.roomdatamvvm.activities.movie.AddMovieViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.showMovie.ShowMovieActivity">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner_show_movie"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:selectItemChoose="@{addViewModel.isSelectSpiner}" />
+        <EditText
+            app:layout_constraintTop_toBottomOf="@id/spinner_show_movie"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/edt_searchNameMovie"
+            android:hint="Search Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintTop_toBottomOf="@id/edt_searchNameMovie"
+            app:layout_constraintBottom_toTopOf="@id/button_home"
+            android:id="@+id/listShowMovie"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            tools:listitem="@layout/item_movie" />
+
+        <Button
+            android:id="@+id/button_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->addViewModel.openMainActivity()}"
+            android:text="HOME"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
