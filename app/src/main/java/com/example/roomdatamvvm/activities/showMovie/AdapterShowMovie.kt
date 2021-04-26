@@ -28,8 +28,6 @@ class AdapterShowMovie: ListAdapter<Movie, AdapterShowMovie.ShowMovieHolder>(Sho
     }
 
     override fun onBindViewHolder(holder: ShowMovieHolder, position: Int) {
-        Log.d("catelory_list",getItem(position).name)
-
         holder.bind(getItem(position))
     }
 

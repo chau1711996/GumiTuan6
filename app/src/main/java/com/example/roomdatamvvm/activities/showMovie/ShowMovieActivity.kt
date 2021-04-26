@@ -1,5 +1,7 @@
 package com.example.roomdatamvvm.activities.showMovie
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -24,14 +26,23 @@ class ShowMovieActivity : AppCompatActivity() {
     }
     private var binding: ActivityShowMovieBinding? = null
     private var listSpinner = mutableListOf<String>()
-    var listFilter = mutableListOf<Movie>()
     private var listShowMovie = mutableListOf<Movie>()
     private var itemMovieAdapter = AdapterShowMovie()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_movie)
         binding?.lifecycleOwner = this
         binding?.addViewModel = addMovieViewModel
+
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+
+        val edit = sharedPreference.getString("EDIT", "")
+        val spinner = sharedPreference.getInt("SPINNER", 0)
+
+        Toast.makeText(this, "${edit} + pos: ${spinner}", Toast.LENGTH_SHORT).show()
 
         binding?.listShowMovie?.run {
             adapter = itemMovieAdapter
@@ -39,25 +50,20 @@ class ShowMovieActivity : AppCompatActivity() {
             setHasFixedSize(true)
         }
 
-        binding?.edtSearchNameMovie?.doAfterTextChanged {
-            it?.let{
-                itemMovieAdapter.submitList(listFilter.filter { movie ->
-                    movie.nameCatelory.contains(it.toString())
-                }.toMutableList())
-                itemMovieAdapter.notifyDataSetChanged()
-            }
-        }
+
+
 
         addMovieViewModel.getAllMovie()
         addMovieViewModel.dataMovie.observe(this, Observer {
             it?.let {
-                Log.d("catelory_list", it.toString())
                 listShowMovie.clear()
                 listShowMovie.addAll(it)
                 itemMovieAdapter.submitList(listShowMovie)
                 itemMovieAdapter.notifyDataSetChanged()
             }
         })
+
+        binding?.edtSearchNameMovie?.setText(edit)
 
         addMovieViewModel.showListSpinner().observe(this, Observer {
             binding?.spinnerShowMovie?.run {
@@ -68,24 +74,53 @@ class ShowMovieActivity : AppCompatActivity() {
                     }
                     adapter =
                         ArrayAdapter(context, android.R.layout.simple_list_item_1, listSpinner)
-                    setSelection(0)
                 }
+                setSelection(spinner)
             }
         })
 
         addMovieViewModel.isSelectSpiner.observe(this, Observer {
             it?.let { str ->
-                val text = "All Catelory Movie"
-                listFilter = listShowMovie.filter{
-                    if(str.equals(text)){
-                        true
-                    }else{
-                        it.nameCatelory == str
-                    }
-                }.toMutableList()
-                itemMovieAdapter.submitList(listFilter)
-                itemMovieAdapter.notifyDataSetChanged()
+                val pos = binding?.spinnerShowMovie?.selectedItemPosition
+                val name = binding?.edtSearchNameMovie?.text.toString()
+                pos?.let {
+                    editor.putInt("SPINNER", pos).apply()
+                    showListFilter(name, str)
+                }
             }
         })
+
+
+        binding?.edtSearchNameMovie?.let {
+            it.setText(edit)
+            it.doAfterTextChanged {
+                it?.let { str ->
+                    val pos = binding?.spinnerShowMovie?.selectedItemPosition
+                    editor.putString("EDIT", str.toString()).apply()
+                    pos?.let {
+                        showListFilter(str.toString(), listSpinner.get(pos))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showListFilter(name: String, catelory: String) {
+        val listFilterCatelory = listShowMovie.filter {
+            if (catelory.equals("All Catelory Movie")) {
+                true
+            } else {
+                it.nameCatelory == catelory
+            }
+        }
+        val listFilterName = listFilterCatelory.filter {
+            if (name.equals("")){
+                true
+            }else{
+                it.name.contains(name)
+            }
+        }
+        itemMovieAdapter.submitList(listFilterName)
+        itemMovieAdapter.notifyDataSetChanged()
     }
 }
